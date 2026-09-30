@@ -7,9 +7,9 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: orderdigital-backend
+  ECR_REPOSITORY: orderdigital-v2-backend
   ECS_CLUSTER: orderdigital-cluster-prod
-  ECS_SERVICE: orderdigital-backend-service
+  ECS_SERVICE: orderdigital-v2-backend-service
   S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
   CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
@@ -46,9 +46,6 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Force new ECS deployment
-        run: |
-          aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment
 
   deploy-frontend:
     name: Build & Deploy Frontend (Angular to S3)
@@ -83,3 +80,4 @@ jobs:
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+
