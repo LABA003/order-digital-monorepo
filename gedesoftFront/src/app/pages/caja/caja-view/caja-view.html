@@ -1,0 +1,125 @@
+<div class="caja-container ocultar-en-impresion">
+
+    <div class="header-section">
+        <div class="title-group">
+            <h1>Caja y Facturación</h1>
+            <p>Gestiona los cobros y tickets pendientes</p>
+        </div>
+
+        <button class="btn btn-glass" (click)="toggleHistorial()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {{ mostrarHistorial ? 'Ocultar Historial' : 'Ver Historial' }}
+        </button>
+    </div>
+
+    <div class="section-title">
+        <h2>🔥 Tickets Pendientes</h2>
+    </div>
+
+    <div class="tickets-grid">
+
+        <div *ngFor="let t of ticketsPendientes" class="ticket-card glass-card nuevo">
+            <div class="card-top">
+                <div class="mesa-badge">Mesa {{ t.pedido?.numMesa }}</div>
+                <span class="status-badge">Nuevo</span>
+            </div>
+
+            <div class="card-body">
+                <div class="price-row">
+                    <span class="label">Total</span>
+                    <span class="amount">${{ t.total | number:'1.2-2' }}</span>
+                </div>
+                <small class="time-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    {{ t.pedido?.fecha | date:'shortTime' }}
+                </small>
+            </div>
+
+            <button class="btn btn-primary btn-full" (click)="prepararImpresion(t)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Cobrar e Imprimir
+            </button>
+        </div>
+
+        <div *ngIf="ticketsPendientes.length === 0" class="empty-state">
+            <p>Todo al día. No hay cobros pendientes.</p>
+        </div>
+    </div>
+
+    <div class="historial-wrapper" *ngIf="mostrarHistorial">
+        <div class="section-title history-title">
+            <h2>✅ Historial de Cobros</h2>
+        </div>
+
+        <div class="tickets-grid historial-grid">
+            <div class="ticket-card glass-card impreso" *ngFor="let t of ticketsImpresos">
+                <div class="card-top">
+                    <span class="mesa-text">Mesa {{ t.pedido?.numMesa }}</span>
+                    <span class="amount-small">${{ t.total }}</span>
+                </div>
+
+                <button class="btn btn-secondary btn-sm" (click)="prepararImpresion(t)">
+                    Re-imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="section-to-print" *ngIf="ticketParaImprimir">
+    <div class="ticket-termico">
+        <div class="centro">
+            <h2>RESTAURANTE</h2>
+            <p>Ticket #: {{ ticketParaImprimir?.idTicket }}</p>
+            <p>Fecha: {{ ticketParaImprimir?.pedido?.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+            <p class="mesa">Mesa: {{ ticketParaImprimir?.pedido?.numMesa }}</p>
+        </div>
+
+        <hr class="dashed">
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="cant">Cant.</th>
+                    <th class="prod">Producto</th>
+                    <th class="precio">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let d of ticketParaImprimir?.pedido?.detalles">
+                    <td class="cant">{{ d.cantidad }}</td>
+                    <td class="prod">{{ d?.platillo?.nombrePlatillo }}</td>
+                    <td class="precio">${{ (d.cantidad * d?.platillo?.precio) | number:'1.2-2' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr class="dashed">
+
+        <div class="totales">
+            <h3 class="total-final">TOTAL: ${{ ticketParaImprimir?.total | number:'1.2-2' }}</h3>
+            <p class="metodo-pago">Método: {{ ticketParaImprimir?.metodoPago || 'Efectivo' }}</p>
+        </div>
+
+        <hr class="dashed">
+
+        <div class="centro pie">
+            <p>¡Gracias por su preferencia!</p>
+            <p>Vuelva pronto</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,445 @@
+/* Layout General de 2 Columnas */
+.pedido-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  gap: 20px;
+  padding: 20px;
+  padding-bottom: 0;
+}
+
+/* --- COLUMNA IZQUIERDA (MENÚ) --- */
+.menu-section {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  padding-bottom: 40px;
+}
+
+.nav-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 2rem;
+
+  .btn-icon-back {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #1a1a1a;
+
+    &:hover {
+      transform: scale(1.1);
+      background: #f0f0f0;
+    }
+  }
+
+  .mesa-badge-lg {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 8px 16px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+  }
+}
+
+.page-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #1a1a1a;
+}
+
+/* Filtros (Chips con iconos) */
+.filtros-categoria {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+
+  .filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    background: rgba(255, 255, 255, 0.6);
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &.active {
+      background: #1a1a1a;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    &:hover:not(.active) {
+      background: white;
+    }
+  }
+}
+
+/* --- GRID DE PLATILLOS --- */
+.platillo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  column-gap: 25px;
+  row-gap: 50px;
+  /* Importante para el efecto flotante */
+  padding-top: 30px;
+}
+
+.food-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(15px);
+  border-radius: 30px;
+  padding: 20px;
+  padding-top: 0;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  &:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  /* IMAGEN FLOTANTE CIRCULAR */
+  .img-container {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    margin-top: -40px;
+    /* Efecto flotante */
+    margin-bottom: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &:hover .img-container {
+    transform: scale(1.05) rotate(5deg);
+  }
+
+  .card-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 2px 0;
+      color: #1a1a1a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Etiqueta de Categoría */
+    .category-label {
+      font-size: 0.75rem;
+      color: #28a745;
+      /* Verde */
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    /* Descripción del platillo */
+    .description-text {
+      font-size: 0.85rem;
+      color: #888;
+      line-height: 1.3;
+      margin-bottom: 15px;
+
+      /* Limitar a 2 líneas con puntos suspensivos */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 2.6em;
+      /* Altura fija para alineación */
+    }
+
+    .price-row {
+      margin-top: auto;
+      /* Empuja el precio al fondo */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .price {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+      }
+
+      .add-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+  }
+}
+
+/* --- COLUMNA DERECHA (TICKET) --- */
+.ticket-section {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.ticket-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .badge-count {
+    font-size: 0.8rem;
+    background: #eee;
+    padding: 4px 8px;
+    border-radius: 10px;
+  }
+}
+
+.ticket-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.05);
+
+  .row-info {
+    display: flex;
+    flex-direction: column;
+
+    .name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .price {
+      font-size: 0.85rem;
+      color: #888;
+    }
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 4px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+    .btn-qty {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: #f5f5f5;
+      cursor: pointer;
+      font-weight: 700;
+      color: #1a1a1a;
+
+      &:hover {
+        background: #e0e0e0;
+      }
+    }
+
+    .qty {
+      font-weight: 600;
+      min-width: 15px;
+      text-align: center;
+    }
+  }
+}
+
+.empty-ticket {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #aaa;
+
+  .icon-placeholder {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    opacity: 0.5;
+  }
+}
+
+.ticket-footer {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+
+    .total-amount {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #1a1a1a;
+    }
+  }
+
+  .btn-enviar {
+    width: 100%;
+    background: #1a1a1a;
+    color: white;
+    padding: 15px;
+    border-radius: 16px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .mesa-input-group {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+  }
+}
+
+/* Toast Notification */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 5000;
+}
+
+.glass-toast {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px 25px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Scrollbar */
+.custom-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}

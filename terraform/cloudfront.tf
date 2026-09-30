@@ -1,4 +1,4 @@
-﻿# S3 Bucket for Angular Frontend
+# S3 Bucket for Angular Frontend
 resource "random_string" "suffix" {
   length  = 8
   special = false
@@ -6,7 +6,7 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_s3_bucket" "frontend" {
-  bucket = "orderdigital-frontend-${var.environment}-${random_string.suffix.result}"
+  bucket = "orderdigital-v2-frontend-${var.environment}-${random_string.suffix.result}"
 }
 
 resource "aws_s3_bucket_public_access_block" "frontend" {
@@ -19,7 +19,7 @@ resource "aws_s3_bucket_public_access_block" "frontend" {
 }
 
 resource "aws_cloudfront_origin_access_control" "default" {
-  name                              = "orderdigital-oac-${random_string.suffix.result}"
+  name                              = "orderdigital-v2-oac-${random_string.suffix.result}"
   description                       = "OAC for Order Digital Frontend"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"

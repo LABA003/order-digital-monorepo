@@ -1,0 +1,279 @@
+/* --- src/styles.scss --- */
+
+/* 1. Importar Tipografía Moderna (Poppins) */
+/* Poppins es la fuente estándar para este tipo de UI moderna y limpia */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* 2. Variables de Diseño (Glassmorphism & Soft UI) */
+:root {
+  --font-main: 'Poppins', sans-serif;
+
+  /* Paleta de Colores Nueva */
+  --color-fondo-base: #F2F6F9;
+  /* Un tono muy suave para el fondo */
+  --color-texto-principal: #1A1A1A;
+  /* Negro suave, no puro */
+  --color-texto-secundario: #8A8A8A;
+  /* Gris elegante */
+
+  --color-acento: #000000;
+  /* Botones negros como en la imagen */
+  --color-acento-texto: #FFFFFF;
+  --color-precio: #1A1A1A;
+
+  /* Variables Glassmorphism (Efecto Vidrio) */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  /* Blanco semitransparente */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+  /* Borde brillante sutil */
+  --glass-blur: blur(20px);
+  /* Desenfoque del fondo */
+  --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  /* Sombra de color difusa */
+
+  --radio-borde-card: 24px;
+  /* Bordes muy redondeados */
+  --radio-borde-btn: 30px;
+  /* Botones tipo píldora */
+}
+
+/* 3. Reseteo y Fondo con Gradiente "Mesh" */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  color: var(--color-texto-principal);
+  min-height: 100vh;
+
+  /* FONDO MÁGICO: Creamos ese efecto de manchas de color suaves (Durazno/Azul/Beige) */
+  background-color: #f8f5f2;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 226, 210, 0.8) 0%, transparent 40%),
+    /* Mancha durazno */
+    radial-gradient(circle at 90% 10%, rgba(230, 240, 255, 0.8) 0%, transparent 40%),
+    /* Mancha azulada */
+    radial-gradient(circle at 50% 80%, rgba(255, 245, 220, 0.8) 0%, transparent 40%);
+  /* Mancha crema */
+  background-attachment: fixed;
+  /* El fondo se queda quieto al hacer scroll */
+
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Títulos Limpios */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  /* Un toque moderno */
+  margin-bottom: 0.5rem;
+  color: var(--color-texto-principal);
+}
+
+p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-texto-secundario);
+}
+
+/* 4. Inputs Modernos (Sin bordes duros) */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  margin-left: 5px;
+  color: var(--color-texto-principal);
+}
+
+.form-control {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+
+  /* Input estilo "Soft UI" */
+  border: none;
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  color: var(--color-texto-principal);
+
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* 5. Botones (Negros redondeados como la imagen) */
+.btn {
+  padding: 0.8rem 2rem;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radio-borde-btn);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-primary {
+  background-color: var(--color-acento);
+  /* Negro */
+  color: var(--color-acento-texto);
+  /* Blanco */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Botón secundario (blanco) */
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: var(--color-texto-principal);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* 6. Utilidad de Tarjeta GLASS (Reemplaza la card anterior) */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  /* El efecto borroso detrás */
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radio-borde-card);
+  box-shadow: var(--glass-shadow);
+  padding: 2rem;
+}
+
+/* --- Layout Base para Web con Sidebar --- */
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 3rem;
+  /* Espacio para respirar */
+  margin-left: 100px;
+  /* Dejamos espacio para el sidebar fijo a la izquierda */
+
+  /* En pantallas muy grandes centramos el contenido un poco */
+  max-width: 1600px;
+}
+
+/* --- ESTILOS DE IMPRESIÓN (MANTENIDOS IGUAL) --- */
+@media print {
+
+  /* 1. REGLA SUPREMA: Ocultar todo */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* 2. REINICIO DE PÁGINA: Quitar márgenes */
+  @page {
+    size: auto;
+    margin: 0mm;
+  }
+
+  /* 3. EXCEPCIÓN: Mostrar solo el ticket y su contenido */
+  #section-to-print,
+  #section-to-print * {
+    visibility: visible !important;
+  }
+
+  /* 4. POSICIONAMIENTO */
+  #section-to-print {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: white !important;
+    z-index: 999999999 !important;
+  }
+
+  /* 5. ESTILOS DEL CONTENIDO DEL TICKET */
+  .ticket-termico {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 80mm;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: black;
+    line-height: 1.2;
+  }
+
+  .ticket-termico h2 {
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+
+  .ticket-termico .centro {
+    text-align: center;
+  }
+
+  .ticket-termico table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+  }
+
+  .ticket-termico th {
+    border-bottom: 1px dashed black !important;
+    text-align: left;
+    font-size: 11px;
+  }
+
+  .ticket-termico td {
+    font-size: 11px;
+    padding: 2px 0;
+  }
+
+  .ticket-termico .precio {
+    text-align: right;
+  }
+
+  .ticket-termico hr {
+    border: none;
+    border-top: 1px dashed black !important;
+    margin: 5px 0;
+  }
+
+  .ticket-termico .totales {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: bold;
+  }
+}

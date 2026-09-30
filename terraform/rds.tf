@@ -1,10 +1,10 @@
-﻿resource "aws_db_subnet_group" "default" {
-  name       = "orderdigital-rds-subnet-group"
+resource "aws_db_subnet_group" "default" {
+  name       = "orderdigital-v2-rds-subnet-group"
   subnet_ids = module.vpc.private_subnets
 }
 
 resource "aws_db_instance" "mysql" {
-  identifier           = "orderdigital-db-${var.environment}"
+  identifier           = "orderdigital-v2-db-${var.environment}"
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t3.micro" # Free tier eligible

@@ -1,0 +1,175 @@
+<div class="cocina-wrapper">
+
+  <div class="cocina-header glass-header">
+    <div class="header-content">
+      <h1>Cocina & Bar</h1>
+      <p class="subtitle">Gestionando: <strong>{{ categoriaPantalla | titlecase }}</strong></p>
+    </div>
+
+    <div class="filtros-categoria">
+      <button *ngFor="let cat of categorias" class="filter-chip" [class.active]="categoriaPantalla === cat.backend"
+        (click)="navegarACategoria(cat.url)">
+
+        <ng-container [ngSwitch]="cat.label.toLowerCase()">
+
+          <svg *ngSwitchCase="'entradas'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-coffee">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+
+          <svg *ngSwitchCase="'platos fuertes'" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M18 8c0-3.31-2.69-6-6-6S6 4.69 6 8"></path>
+            <path d="M22 8H2"></path>
+            <path d="M22 17H2"></path>
+            <path d="M4 8v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path>
+          </svg>
+
+          <svg *ngSwitchCase="'postres'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M5.5 11h13a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"></path>
+          </svg>
+
+          <svg *ngSwitchCase="'bebidas'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+
+          <svg *ngSwitchDefault xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+        </ng-container>
+
+        <span>{{ cat.label }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="kanban-board">
+
+    <div class="kanban-col">
+      <div class="col-header status-new">
+        <span class="dot"></span>
+        <h2>Nuevos <span class="count">{{ pedidosNuevos.length }}</span></h2>
+      </div>
+
+      <div class="col-body custom-scroll">
+        <div class="pedido-card glass-card fade-in" *ngFor="let pedido of pedidosNuevos">
+          <div class="card-top">
+            <span class="order-id">#{{ pedido.idPedido }}</span>
+            <span class="mesa-badge">Mesa {{ pedido.numMesa }}</span>
+          </div>
+
+          <div class="card-content">
+            <ul class="items-list">
+              <li *ngFor="let detalle of pedido.detalles">
+                <div *ngIf="esCategoriaCoincidente(detalle.platillo.categoria)" class="item-row">
+                  <span class="qty">{{ detalle.cantidad }}x</span>
+                  <span class="name">{{ detalle.platillo.nombrePlatillo }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn btn-black btn-block" (click)="moverAEnPreparacion(pedido)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Iniciar
+            </button>
+            <button class="btn-text text-danger" (click)="cancelarPedido(pedido)">
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="pedidosNuevos.length === 0" class="empty-state">
+          <p>Sin pedidos nuevos</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="kanban-col">
+      <div class="col-header status-prep">
+        <span class="dot"></span>
+        <h2>Preparando <span class="count">{{ pedidosEnPrep.length }}</span></h2>
+      </div>
+
+      <div class="col-body custom-scroll">
+        <div class="pedido-card glass-card prep-card fade-in" *ngFor="let pedido of pedidosEnPrep">
+          <div class="card-top">
+            <span class="order-id">#{{ pedido.idPedido }}</span>
+            <span class="mesa-badge dark">Mesa {{ pedido.numMesa }}</span>
+          </div>
+
+          <div class="checklist-container">
+            <div *ngFor="let detalle of pedido.detalles">
+              <div *ngIf="esCategoriaCoincidente(detalle.platillo.categoria)" class="check-item">
+                <label [class.checked]="isItemChecked(pedido.idPedido, detalle.idPlatillo)">
+                  <input type="checkbox" [checked]="isItemChecked(pedido.idPedido, detalle.idPlatillo)"
+                    (change)="toggleItemCheck(pedido.idPedido, detalle.idPlatillo)">
+                  <span class="custom-check"></span>
+                  <div class="item-text">
+                    <span class="qty-badge">{{ detalle.cantidad }}</span>
+                    <span>{{ detalle.platillo.nombrePlatillo }}</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn btn-block transition-btn" [class.btn-success]="estaTodoLoMioListo(pedido)"
+              [class.btn-outline]="!estaTodoLoMioListo(pedido)" (click)="moverAListo(pedido)">
+              {{ estaTodoLoMioListo(pedido) ? '¡Completar!' : 'Marcar Listo' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kanban-col">
+      <div class="col-header status-ready">
+        <span class="dot"></span>
+        <h2>Listos <span class="count">{{ pedidosListos.length }}</span></h2>
+      </div>
+
+      <div class="col-body custom-scroll">
+        <div class="pedido-card glass-card ready-card fade-in" *ngFor="let pedido of pedidosListos">
+          <div class="card-top">
+            <span class="order-id">#{{ pedido.idPedido }}</span>
+            <span class="mesa-badge success">Mesa {{ pedido.numMesa }}</span>
+          </div>
+
+          <div class="ready-content">
+            <div class="icon-ready">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <p>Listo para entrega</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

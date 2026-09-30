@@ -1,0 +1,19 @@
+<div class="cocina-panel">
+    <header class="cocina-header">
+        <h2>Bienvenido</h2>
+    </header>
+    <nav class="cocina-nav">
+          <a 
+      [routerLink]="['plato-fuerte']" 
+      class="btn-cocina-pedido"
+    >
+      <i class="icon-pedido"></i> <!--  Icono -->
+     
+    </a>
+
+    </nav>
+    <div class="cocina-content">
+        <router-outlet></router-outlet>
+    </div>
+
+</div>

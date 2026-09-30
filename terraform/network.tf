@@ -1,9 +1,9 @@
-﻿# VPC and Subnets (Free Tier - No NAT Gateway)
+# VPC and Subnets (Free Tier - No NAT Gateway)
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.1.2"
 
-  name = "orderdigital-vpc-${var.environment}"
+  name = "orderdigital-v2-vpc-${var.environment}"
   cidr = "10.0.0.0/16"
 
   azs             = ["${var.aws_region}a", "${var.aws_region}b"]
@@ -17,7 +17,7 @@ module "vpc" {
 
 # Security Groups
 resource "aws_security_group" "ec2_sg" {
-  name        = "orderdigital-ec2-sg"
+  name        = "orderdigital-v2-ec2-sg"
   description = "Allow HTTP and SSH"
   vpc_id      = module.vpc.vpc_id
 
@@ -51,7 +51,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_security_group" "rds_sg" {
-  name        = "orderdigital-rds-sg"
+  name        = "orderdigital-v2-rds-sg"
   description = "Allow MySQL traffic from EC2"
   vpc_id      = module.vpc.vpc_id
 

@@ -1,0 +1,330 @@
+/* --- Estilos de Pantalla (Glassmorphism) --- */
+.caja-container {
+  /* Ya no necesitamos background-color, usamos el del body */
+  padding-bottom: 50px;
+
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2.5rem;
+
+    .title-group {
+      h1 {
+        margin-bottom: 5px;
+        font-size: 2rem;
+      }
+
+      p {
+        margin: 0;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  /* Títulos de Sección */
+  .section-title {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    h2 {
+      font-size: 1.3rem;
+      margin: 0;
+      color: var(--color-texto-principal);
+    }
+
+    &.history-title {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  /* GRID SYSTEM para las tarjetas */
+  .tickets-grid {
+    display: grid;
+    /* Tarjetas responsivas: mínimo 260px de ancho */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+
+  /* ESTILO DE TARJETA (TICKET) */
+  .ticket-card {
+    /* Hereda glass-card del CSS global, añadimos ajustes locales */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &.nuevo {
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      /* Sutil borde rojo */
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+
+      .mesa-badge {
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .status-badge {
+        background: #FFEBEE;
+        color: #D32F2F;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .card-body {
+      margin-bottom: 20px;
+
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 8px;
+
+        .label {
+          font-size: 0.9rem;
+          color: var(--color-texto-secundario);
+        }
+
+        .amount {
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: #1a1a1a;
+          line-height: 1;
+        }
+      }
+
+      .time-info {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--color-texto-secundario);
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  /* Estilos específicos para Historial (más apagados) */
+  .historial-grid {
+    .ticket-card.impreso {
+      opacity: 0.8;
+      background: rgba(255, 255, 255, 0.5);
+      /* Más transparente */
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      min-height: auto;
+      /* Más compactos */
+
+      .card-top {
+        margin-bottom: 10px;
+      }
+
+      .mesa-text {
+        font-weight: 600;
+      }
+
+      .amount-small {
+        font-weight: 700;
+      }
+
+      &:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.9);
+      }
+    }
+  }
+
+  /* Botones específicos */
+  .btn-full {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-glass {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    color: var(--color-texto-principal);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.8);
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    width: 100%;
+  }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--color-texto-secundario);
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.historial-wrapper {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* --- REGLAS DE IMPRESIÓN (SIN CAMBIOS VISUALES MAYORES) --- */
+/* Mantenemos esto estricto para las impresoras térmicas */
+#section-to-print {
+  display: none;
+}
+
+/* --- REGLAS DE IMPRESIÓN (SIN CAMBIOS, SOLO VERIFICA QUE TENGAS EL !important) --- */
+@media print {
+  /* ... resto de tu código print ... */
+
+  #section-to-print {
+    display: block !important; /* Esto fuerza a que aparezca SOLO al imprimir */
+    /* ... resto de tus estilos ... */
+  }
+}
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  body {
+    background-color: white !important;
+  }
+
+  .ocultar-en-impresion {
+    display: none !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 0mm;
+  }
+
+  #section-to-print,
+  #section-to-print * {
+    visibility: visible !important;
+  }
+
+  #section-to-print {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white !important;
+    padding: 10px;
+    z-index: 99999;
+  }
+
+  .ticket-termico {
+    width: 100%;
+    max-width: 80mm;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: black;
+
+    h2 {
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .centro {
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th {
+      border-bottom: 1px dashed black;
+      text-align: left;
+      font-size: 11px;
+    }
+
+    td {
+      padding: 4px 0;
+      font-size: 11px;
+    }
+
+    .cant {
+      width: 10%;
+      text-align: center;
+    }
+
+    .prod {
+      width: 65%;
+    }
+
+    .precio {
+      width: 25%;
+      text-align: right;
+    }
+
+    .totales {
+      margin-top: 10px;
+      border-top: 1px dashed black;
+      padding-top: 5px;
+      text-align: right;
+    }
+
+    .pie {
+      margin-top: 20px;
+      font-size: 10px;
+    }
+
+    hr.dashed {
+      border: none;
+      border-top: 1px dashed black;
+      margin: 10px 0;
+    }
+  }
+}

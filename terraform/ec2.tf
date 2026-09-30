@@ -1,13 +1,13 @@
-﻿# ECR Repository (Free tier allows 500MB/mo)
+# ECR Repository (Free tier allows 500MB/mo)
 resource "aws_ecr_repository" "backend" {
-  name                 = "orderdigital-backend"
+  name                 = "orderdigital-v2-backend"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 }
 
 # IAM Role for EC2 to pull from ECR
 resource "aws_iam_role" "ec2_role" {
-  name = "orderdigital-ec2-role"
+  name = "orderdigital-v2-ec2-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "ecr_readonly" {
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "orderdigital-ec2-profile"
+  name = "orderdigital-v2-ec2-profile"
   role = aws_iam_role.ec2_role.name
 }
 
@@ -64,10 +64,10 @@ resource "aws_instance" "backend" {
               
               # Pull image and run
               # En un entorno real de CI/CD, usariamos GitHub Actions para conectarnos via SSH y hacer deploy.
-              # Aquí dejamos Docker listo.
+              # Aqu� dejamos Docker listo.
               EOF
 
   tags = {
-    Name = "orderdigital-backend"
+    Name = "orderdigital-v2-backend"
   }
 }
