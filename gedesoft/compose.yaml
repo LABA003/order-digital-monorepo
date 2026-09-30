@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: nest_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "mysql://luis:1234567890@db:3306/menu_db"
+      JWT_SECRET: "supersecretjwt"
+      JWT_EXP: "24h"
+      PORT: "3000"
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npx prisma generate && npx prisma migrate deploy && npm run build && npm start"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: menu_db
+      MYSQL_USER: luis
+      MYSQL_PASSWORD: 1234567890
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+
+  depends_on:
+  - mysql_db

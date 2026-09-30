@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MESERO
+  COCINERO
+  CAJERO
+}
+
+enum StatusPedido {
+  PENDIENTE
+  ENTREGADO
+  CANCELADO
+}
+
+enum TipoCategoria {
+  ENTRADA
+  PLATO_FUERTE
+  BEBIDA
+  POSTRE
+  OTRO
+}
+
+model Usuario {
+  idUsuario     Int     @id @default(autoincrement())
+  nombreUsuario String
+  email         String  @unique
+  imagen        String?
+  password      String
+  rol           Role
+
+  pedidos Pedido[]
+  tickets Ticket[]
+}
+
+model Platillo {
+  idPlatillo     Int           @id @default(autoincrement())
+  nombrePlatillo String
+  descripcion    String?
+  imagen         String?
+  precio         Float
+  categoria      TipoCategoria @default(OTRO)
+  status         Boolean?      @default(true)
+
+  detallePedidos DetallePedido[]
+}
+
+model Pedido {
+  idPedido  Int          @id @default(autoincrement())
+  idUsuario Int?
+  usuario   Usuario?     @relation(fields: [idUsuario], references: [idUsuario])
+  numMesa   Int
+  fecha     DateTime     @default(now())
+  status    StatusPedido @default(PENDIENTE)
+
+  detalles DetallePedido[]
+  ticket   Ticket?
+}
+
+model DetallePedido {
+  idPedido   Int
+  idPlatillo Int
+  cantidad   Int @default(1)
+
+  pedido   Pedido   @relation(fields: [idPedido], references: [idPedido])
+  platillo Platillo @relation(fields: [idPlatillo], references: [idPlatillo])
+
+  @@id([idPedido, idPlatillo])
+}
+
+model Ticket {
+  idTicket   Int     @id @default(autoincrement())
+  idPedido   Int?    @unique
+  idUsuario  Int?
+  metodoPago String?
+  total      Float?
+
+  pedido  Pedido?  @relation(fields: [idPedido], references: [idPedido])
+  usuario Usuario? @relation(fields: [idUsuario], references: [idUsuario])
+}

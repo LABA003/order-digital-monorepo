@@ -1,0 +1,17 @@
+# Bloqueo de dependencias
+gedesoft/node_modules/
+gedesoftFront/node_modules/
+
+# Bloqueo de compilaciones y caché
+gedesoft/dist/
+gedesoftFront/dist/
+gedesoftFront/.angular/
+
+# Archivos pesados de configuración
+**/*.lock
+**/*-lock.json
+**/pnpm-lock.yaml
+
+# Variables de entorno y logs
+**/.env
+**/*.log
