@@ -39,11 +39,12 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build backend from gedesoft folder
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./gedesoft
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./gedesoft
+          docker buildx create --use
+          docker buildx build --platform linux/arm64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --push ./gedesoft
+          docker buildx build --platform linux/arm64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest --push ./gedesoft
           
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          
+          
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
 
@@ -81,6 +82,7 @@ jobs:
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+
 
 
 
