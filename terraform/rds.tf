@@ -7,7 +7,7 @@ resource "aws_db_instance" "mysql" {
   identifier           = "orderdigital-v2-db-${var.environment}"
   engine               = "mysql"
   engine_version       = "8.0"
-  instance_class       = "db.t4g.micro" # Free tier eligible
+  instance_class       = "db.t3.micro" # Free tier eligible
   allocated_storage    = 20
   storage_type         = "gp2" # Free tier uses gp2
   
@@ -22,4 +22,5 @@ resource "aws_db_instance" "mysql" {
   publicly_accessible    = false
   skip_final_snapshot    = true
 }
+
 
