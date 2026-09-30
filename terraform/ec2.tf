@@ -40,14 +40,14 @@ data "aws_ami" "amazon_linux" {
 
   filter {
     name   = "name"
-    values = ["al2023-ami-2023.*-x86_64"]
+    values = ["al2023-ami-2023.*-arm64"]
   }
 }
 
-# EC2 Instance (Free Tier: t2.micro or t3.micro)
+# EC2 Instance (Free Tier: t2.micro or t4g.micro)
 resource "aws_instance" "backend" {
   ami           = data.aws_ami.amazon_linux.id
-  instance_type = "t3.micro"
+  instance_type = "t4g.micro"
   
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
@@ -71,3 +71,4 @@ resource "aws_instance" "backend" {
     Name = "orderdigital-v2-backend"
   }
 }
+
