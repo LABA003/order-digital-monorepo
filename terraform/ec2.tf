@@ -47,7 +47,7 @@ data "aws_ami" "amazon_linux" {
 # EC2 Instance (Free Tier: t2.micro or t3.micro)
 resource "aws_instance" "backend" {
   ami           = data.aws_ami.amazon_linux.id
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
   
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
