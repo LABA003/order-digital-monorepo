@@ -75,9 +75,10 @@ jobs:
       - name: Deploy to S3
         run: |
           # Sincroniza la carpeta dist con S3, eliminando archivos huérfanos
-          aws s3 sync ./gedesoftFront/dist/gedesoft-front/browser s3://$S3_BUCKET --delete
+          aws s3 sync ./gedesoftFront/dist/mi-restaurante-frontend/browser s3://$S3_BUCKET --delete
 
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+
 
