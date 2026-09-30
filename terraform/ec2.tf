@@ -1,4 +1,4 @@
-# ECR Repository (Free tier allows 500MB/mo)
+﻿# ECR Repository (Free tier allows 500MB/mo)
 resource "aws_ecr_repository" "backend" {
   name                 = "orderdigital-v2-backend"
   image_tag_mutability = "MUTABLE"
@@ -64,10 +64,11 @@ resource "aws_instance" "backend" {
               
               # Pull image and run
               # En un entorno real de CI/CD, usariamos GitHub Actions para conectarnos via SSH y hacer deploy.
-              # Aqu� dejamos Docker listo.
+              # Aquií dejamos Docker listo.
               EOF
 
   tags = {
     Name = "orderdigital-v2-backend"
   }
 }
+
