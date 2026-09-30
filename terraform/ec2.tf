@@ -64,11 +64,10 @@ resource "aws_instance" "backend" {
               
               # Pull image and run
               # En un entorno real de CI/CD, usariamos GitHub Actions para conectarnos via SSH y hacer deploy.
-              # Aquií dejamos Docker listo.
+              # Aqui dejamos Docker listo.
               EOF
 
   tags = {
     Name = "orderdigital-v2-backend"
   }
 }
-
