@@ -1,4 +1,4 @@
-# VPC and Subnets (Free Tier - No NAT Gateway)
+﻿# VPC and Subnets (Free Tier - No NAT Gateway)
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.1.2"

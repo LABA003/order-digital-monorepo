@@ -1,4 +1,4 @@
-resource "aws_db_subnet_group" "default" {
+﻿resource "aws_db_subnet_group" "default" {
   name       = "orderdigital-v2-rds-subnet-group"
   subnet_ids = module.vpc.private_subnets
 }

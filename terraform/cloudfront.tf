@@ -1,4 +1,4 @@
-# S3 Bucket for Angular Frontend
+﻿# S3 Bucket for Angular Frontend
 resource "random_string" "suffix" {
   length  = 8
   special = false
