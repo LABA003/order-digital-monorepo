@@ -1,12 +1,12 @@
 ﻿# S3 Bucket for Angular Frontend
-resource "aws_s3_bucket" "frontend" {
-  bucket = "orderdigital-frontend-${var.environment}-"
-}
-
 resource "random_string" "suffix" {
   length  = 8
   special = false
   upper   = false
+}
+
+resource "aws_s3_bucket" "frontend" {
+  bucket = "orderdigital-frontend-${var.environment}-${random_string.suffix.result}"
 }
 
 resource "aws_s3_bucket_public_access_block" "frontend" {
@@ -19,7 +19,7 @@ resource "aws_s3_bucket_public_access_block" "frontend" {
 }
 
 resource "aws_cloudfront_origin_access_control" "default" {
-  name                              = "orderdigital-oac"
+  name                              = "orderdigital-oac-${random_string.suffix.result}"
   description                       = "OAC for Order Digital Frontend"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
@@ -30,20 +30,17 @@ resource "aws_cloudfront_distribution" "frontend" {
   origin {
     domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id                = "S3-"
+    origin_id                = "S3-frontend-origin"
   }
 
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   
-  # If you have a custom domain:
-  # aliases = [var.domain_name]
-
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-"
+    target_origin_id = "S3-frontend-origin"
 
     forwarded_values {
       query_string = false
@@ -62,7 +59,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     error_caching_min_ttl = 300
     error_code            = 404
     response_code         = 200
-    response_page_path    = "/index.html" # Important for Angular routing
+    response_page_path    = "/index.html"
   }
 
   custom_error_response {
@@ -80,9 +77,6 @@ resource "aws_cloudfront_distribution" "frontend" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
-    # Use ACM certificate if using custom domain:
-    # acm_certificate_arn = aws_acm_certificate.cert.arn
-    # ssl_support_method  = "sni-only"
   }
 }
 
@@ -98,7 +92,7 @@ resource "aws_s3_bucket_policy" "frontend" {
           Service = "cloudfront.amazonaws.com"
         }
         Action    = "s3:GetObject"
-        Resource  = "/*"
+        Resource  = "${aws_s3_bucket.frontend.arn}/*"
         Condition = {
           StringEquals = {
             "AWS:SourceArn" = aws_cloudfront_distribution.frontend.arn
