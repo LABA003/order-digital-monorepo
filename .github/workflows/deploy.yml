@@ -15,7 +15,7 @@ env:
 
 jobs:
   deploy-backend:
-    name: Build & Deploy Backend (NestJS to ECS Fargate)
+    name: Build & Deploy Backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -44,13 +44,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build backend from gedesoft folder
           docker buildx create --use
           docker buildx build --platform linux/arm64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --push ./gedesoft
           docker buildx build --platform linux/arm64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest --push ./gedesoft
-          
-          
-          
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Deploy Backend to EC2 via SSM
@@ -63,28 +59,7 @@ jobs:
           
           jq -n --arg id "$INSTANCE_ID" --arg cmd "$COMMANDS" '{InstanceIds: [$id], DocumentName: "AWS-RunShellScript", Parameters: {commands: [$cmd]}}' > ssm.json
           
-          aws ssm send-command --cli-input-json file://ssm.json --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY; docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest; docker stop backend || true; docker rm backend || true; docker run -d --name backend --restart always -p 3000:3000 -e DATABASE_URL=\"mysql://admin_luis:OrderDigital_2026!@orderdigital-v2-db-prod.csbwkoecu5x3.us-east-1.rds.amazonaws.com:3306/menu_db\" -e JWT_SECRET=\"SuperSecret123!\" -e CORS_ORIGINS=\"*\" $ECR_REGISTRY/$ECR_REPOSITORY:latest"
-          
-          # Obtenemos el ID de la instancia basándonos en el tag Name=orderdigital-v2-backend
-          INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=orderdigital-v2-backend" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
-          
-                              echo "Desplegando en la instancia: $INSTANCE_ID"
-          
-          EC2_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
-          echo "La IP publica del backend es: $ECR_REGISTRY / $EC2_IP"
-          
-          jq -n \
-            --arg id "$INSTANCE_ID" \
-            --arg cmd "$COMMANDS" \
-            '{InstanceIds: [$id], DocumentName: "AWS-RunShellScript", Parameters: {commands: [$cmd]}}' > ssm.json
-            
           aws ssm send-command --cli-input-json file://ssm.json --region $AWS_REGION
-            --arg id "$INSTANCE_ID" \
-            --arg cmd "$COMMANDS" \
-            '{InstanceIds: [$id], DocumentName: "AWS-RunShellScript", Parameters: {commands: [$cmd]}}' > ssm.json
-            
-          aws ssm send-command --cli-input-json file://ssm.json --region $AWS_REGION
-
 
   deploy-frontend:
     name: Build & Deploy Frontend (Angular to S3)
@@ -113,23 +88,9 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          # Sincroniza la carpeta dist con S3, eliminando archivos huérfanos
           if [ -f ./gedesoftFront/dist/mi-restaurante-frontend/browser/index.csr.html ]; then mv ./gedesoftFront/dist/mi-restaurante-frontend/browser/index.csr.html ./gedesoftFront/dist/mi-restaurante-frontend/browser/index.html; fi
           aws s3 sync ./gedesoftFront/dist/mi-restaurante-frontend/browser s3://$S3_BUCKET --delete
 
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
-
-
-
-
-
-
-
-
-
-
-
-
-
