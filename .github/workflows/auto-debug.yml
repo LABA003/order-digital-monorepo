@@ -1,4 +1,4 @@
-﻿name: Auto Debug
+﻿name: Auto Debug to S3
 
 on:
   push:
@@ -6,16 +6,12 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
 
 jobs:
   debug:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -23,21 +19,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Fetch CF Config
+      - name: Fetch CF Config and Logs
         run: |
           aws cloudfront get-distribution-config --id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} > cf.json
-          cat cf.json > debug_cf.txt
           
           INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=orderdigital-v2-backend" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
           COMMANDS="docker logs --tail 200 backend"
           CMD_ID=$(aws ssm send-command --instance-ids "$INSTANCE_ID" --document-name "AWS-RunShellScript" --parameters "commands=["\$COMMANDS"]" --query "Command.CommandId" --output text)
           sleep 5
-          aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" --query "StandardOutputContent" --output text > debug_logs.txt || true
-
-      - name: Commit Debug Files
-        run: |
-          git config --global user.name "Auto Debug"
-          git config --global user.email "debug@example.com"
-          git add debug_cf.txt debug_logs.txt
-          git commit -m "Auto debug files"
-          git push
+          aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" --query "StandardOutputContent" --output text > logs.txt || true
+          
+          aws s3 cp cf.json s3://$S3_BUCKET/debug_cf.json
+          aws s3 cp logs.txt s3://$S3_BUCKET/debug_logs.txt
