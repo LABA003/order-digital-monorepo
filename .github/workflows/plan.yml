@@ -1,6 +1,8 @@
 ﻿name: Run Terraform Plan
 
 on:
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 env:
@@ -36,3 +38,4 @@ jobs:
       - name: Upload Plan to S3
         run: |
           aws s3 cp ./terraform/plan.txt s3://${{ secrets.S3_BUCKET_NAME }}
+
