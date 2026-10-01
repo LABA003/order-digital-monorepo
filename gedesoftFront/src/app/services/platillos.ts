@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -12,7 +13,7 @@ import {
 })
 export class PlatillosService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/platillos'; // API de Nest.js
+  private apiUrl = environment.apiUrl + '/platillos'; // API de Nest.js
 
 
   // Admin: Crear platillo
@@ -49,3 +50,4 @@ export class PlatillosService {
   }
   
 }
+

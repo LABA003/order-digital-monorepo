@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -11,7 +12,7 @@ import {
 })
 export class UsuariosService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/usuarios'; // API de Nest.js
+  private apiUrl = environment.apiUrl + '/usuarios'; // API de Nest.js
 
 
   /**
@@ -54,3 +55,4 @@ export class UsuariosService {
     throw new Error('Method not implemented.');
   }
 }
+

@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID, Inject } from '@angular/core'; 
 import { isPlatformBrowser } from '@angular/common'; 
@@ -10,7 +11,7 @@ import { Observable, tap } from 'rxjs';
 export class Auth {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000/auth'; 
+  private apiUrl = environment.apiUrl + '/auth'; 
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -45,7 +46,7 @@ export class Auth {
     if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem('token');
     }
-    return null; // Si está en el servidor, no hay token
+    return null; // Si estÃ¡ en el servidor, no hay token
   }
 
   getUserRole(): string | null {
@@ -53,11 +54,11 @@ export class Auth {
     if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem('user_role');
     }
-    return null; // Si está en el servidor, no hay rol
+    return null; // Si estÃ¡ en el servidor, no hay rol
   }
 
   isLoggedIn(): boolean {
-    // Este método ahora es seguro, porque getToken() ya está protegido
+    // Este mÃ©todo ahora es seguro, porque getToken() ya estÃ¡ protegido
     return !!this.getToken(); 
   }
 }

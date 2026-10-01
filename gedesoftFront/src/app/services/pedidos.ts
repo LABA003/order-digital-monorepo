@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -17,11 +18,11 @@ import {
 })
 export class PedidosService { 
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/pedidos'; 
+  private apiUrl = environment.apiUrl + '/pedidos'; 
 
   
   /**
-   * (Mesero) Envía un nuevo pedido al backend
+   * (Mesero) EnvÃ­a un nuevo pedido al backend
    */
   // Antes: crearPedido(pedido: { items: any[], total: number }): Observable<any>
   crearPedido(dto: CreatePedidoDto): Observable<PedidoResponse> {
@@ -29,7 +30,7 @@ export class PedidosService {
   }
 
   /**
-   * (Cocinero) Obtiene los pedidos pendientes para una categoría
+   * (Cocinero) Obtiene los pedidos pendientes para una categorÃ­a
    */
   obtenerPendientesPorCategoria(categoria: string): Observable<DetallePendiente[]> {
     return this.http.get<DetallePendiente[]>(`${this.apiUrl}/pendientes/${categoria}`);
@@ -51,7 +52,7 @@ export class PedidosService {
   }
 
   /**
-   * Obtiene un pedido específico por su ID.
+   * Obtiene un pedido especÃ­fico por su ID.
    * Corresponde a: @Get(':id')
    */
   obtenerPedidoPorId(id: number): Observable<Pedido> {
@@ -67,7 +68,7 @@ export class PedidosService {
   }
 
   /**
-   * Elimina platillos específicos de un pedido.
+   * Elimina platillos especÃ­ficos de un pedido.
    * Corresponde a: @Patch(':idPedido/eliminar-platillos')
    */
   eliminarPlatillos(idPedido: number, dto: RemovePlatillosDto): Observable<PedidoResponse> {

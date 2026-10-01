@@ -1,3 +1,4 @@
+﻿import { environment } from '../environments/environment';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
@@ -10,7 +11,7 @@ import { provideSocketIo, SocketIoConfig } from 'ngx-socket-io';
 
 
 const config: SocketIoConfig = {
-  url:'http://localhost:3000', // URL del servidor de Socket.IO
+  url:environment.socketUrl, // URL del servidor de Socket.IO
   options: {
     autoConnect: false // MUST be false so SSR doesn't hang waiting for websockets
   }
@@ -26,3 +27,4 @@ export const appConfig: ApplicationConfig = {
     provideSocketIo(config)
   ]
 };
+

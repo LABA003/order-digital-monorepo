@@ -1,3 +1,4 @@
+﻿import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -7,9 +8,9 @@ import { Observable } from 'rxjs';
 })
 export class TicketsService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/tickets'; // Ajusta a tu puerto
+  private apiUrl = environment.apiUrl + '/tickets'; // Ajusta a tu puerto
 
-  // Esta función es la que llamará el Mesero
+  // Esta funciÃ³n es la que llamarÃ¡ el Mesero
 
   obtenerTicketPorId(id: number): Observable<any> {
     //rura con todods los detalle
@@ -27,3 +28,4 @@ export class TicketsService {
     return this.http.get<any[]>(this.apiUrl);
   }
 }
+

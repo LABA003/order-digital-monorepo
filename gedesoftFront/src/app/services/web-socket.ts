@@ -1,4 +1,4 @@
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+﻿import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
@@ -18,23 +18,23 @@ export class WebSocketService {
     
     // Si quieres logs inmediatos al crear la instancia:
     try {
-      // Conexión (usualmente ngx-socket-io conecta automáticamente según configuración)
+      // ConexiÃ³n (usualmente ngx-socket-io conecta automÃ¡ticamente segÃºn configuraciÃ³n)
       const ioSocket: any = (this.socket as any).ioSocket;
       if (ioSocket) {
         ioSocket.on('connect', () => console.log('[WS] connect', ioSocket.id));
         ioSocket.on('disconnect', (reason: any) => console.log('[WS] disconnect', reason));
         ioSocket.on('connect_error', (err: any) => console.error('[WS] connect_error', err));
 
-        // onAny está disponible en socket.io-client >=3: usamos ioSocket.onAny si existe
+        // onAny estÃ¡ disponible en socket.io-client >=3: usamos ioSocket.onAny si existe
         if (typeof ioSocket.onAny === 'function') {
           ioSocket.onAny((event: string, ...args: any[]) => {
             console.log(`[WS onAny] event='${event}'`, args);
           });
         } else {
-          console.log('[WS] onAny no disponible en esta versión del cliente');
+          console.log('[WS] onAny no disponible en esta versiÃ³n del cliente');
         }
       } else {
-        console.warn('[WS] ioSocket no accesible - ngx-socket-io versión distinta?');
+        console.warn('[WS] ioSocket no accesible - ngx-socket-io versiÃ³n distinta?');
       }
     } catch (e) {
       console.warn('[WS] error inicializando logs avanzados', e);
@@ -47,7 +47,7 @@ export class WebSocketService {
     this.socket.emit(eventName, data);
   }
 
-  // Emit con ACK (callback) para confirmar que servidor recibió
+  // Emit con ACK (callback) para confirmar que servidor recibiÃ³
   emitWithAck(eventName: string, data: any, cb?: (ack: any) => void) {
     try {
       const ioSocket: any = (this.socket as any).ioSocket;
@@ -81,7 +81,7 @@ export class WebSocketService {
     });
   }
 
-  // (Opcional) método para registrar a nivel app un observable de todos los eventos (solo si ioSocket.onAny disponible)
+  // (Opcional) mÃ©todo para registrar a nivel app un observable de todos los eventos (solo si ioSocket.onAny disponible)
   listenAll(): Observable<{ event: string, args: any[] }> {
     return new Observable(sub => {
       const ioSocket: any = (this.socket as any).ioSocket;
@@ -96,3 +96,4 @@ export class WebSocketService {
     });
   }
 }
+
