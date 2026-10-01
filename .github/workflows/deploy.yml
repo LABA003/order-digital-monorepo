@@ -53,6 +53,21 @@ jobs:
           
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+      - name: Deploy Backend to EC2 via SSM
+        run: |
+          COMMANDS="aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY; docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest; docker stop backend || true; docker rm backend || true; docker run -d --name backend --restart always -p 3000:3000 -e DATABASE_URL=\"mysql://admin_luis:OrderDigital_2026!@orderdigital-v2-db-prod.csbwkoecu5x3.us-east-1.rds.amazonaws.com:3306/menu_db\" -e JWT_SECRET=\"SuperSecret123!\" -e CORS_ORIGINS=\"*\" $ECR_REGISTRY/$ECR_REPOSITORY:latest"
+          
+          # Obtenemos el ID de la instancia basándonos en el tag Name=orderdigital-v2-backend
+          INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=orderdigital-v2-backend" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
+          
+          echo "Desplegando en la instancia: $INSTANCE_ID"
+          aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy latest backend container" \
+            --parameters "commands=[""]" \
+            --region $AWS_REGION
+
 
   deploy-frontend:
     name: Build & Deploy Frontend (Angular to S3)
@@ -88,6 +103,7 @@ jobs:
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+
 
 
 
