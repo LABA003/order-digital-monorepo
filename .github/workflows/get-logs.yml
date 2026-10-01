@@ -1,4 +1,4 @@
-﻿name: Get EC2 Logs
+﻿name: Get EC2 Logs and CF
 
 on:
   workflow_dispatch:
@@ -17,15 +17,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Fetch CF Config
+        run: |
+          aws cloudfront get-distribution-config --id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} > cf.json
+          cat cf.json
+
       - name: Fetch Docker Logs via SSM
         run: |
           INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=orderdigital-v2-backend" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
-          
           COMMANDS="docker logs --tail 200 backend"
-          
           CMD_ID=$(aws ssm send-command --instance-ids "$INSTANCE_ID" --document-name "AWS-RunShellScript" --parameters "commands=["\$COMMANDS"]" --query "Command.CommandId" --output text)
-          
-          echo "Waiting for command $CMD_ID to complete..."
           sleep 5
           aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" --query "StandardOutputContent" --output text
-          aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" --query "StandardErrorContent" --output text
