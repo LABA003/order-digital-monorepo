@@ -65,7 +65,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy latest backend container" \
-            --parameters "commands=[""]" \
+            --parameters commands="$COMMANDS" \
             --region $AWS_REGION
 
 
@@ -103,6 +103,7 @@ jobs:
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+
 
 
 
