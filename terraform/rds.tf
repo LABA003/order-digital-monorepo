@@ -19,9 +19,10 @@ resource "aws_db_instance" "mysql" {
   db_subnet_group_name   = aws_db_subnet_group.default.name
   
   multi_az               = false
-  publicly_accessible    = true
+  publicly_accessible    = false
   skip_final_snapshot    = true
 }
+
 
 
 
