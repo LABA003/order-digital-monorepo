@@ -60,9 +60,17 @@ jobs:
           # Obtenemos el ID de la instancia basándonos en el tag Name=orderdigital-v2-backend
           INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=orderdigital-v2-backend" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
           
-                    echo "Desplegando en la instancia: $INSTANCE_ID"
+                              echo "Desplegando en la instancia: $INSTANCE_ID"
+          
+          EC2_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
+          echo "La IP publica del backend es: $ECR_REGISTRY / $EC2_IP"
           
           jq -n \
+            --arg id "$INSTANCE_ID" \
+            --arg cmd "$COMMANDS" \
+            '{InstanceIds: [$id], DocumentName: "AWS-RunShellScript", Parameters: {commands: [$cmd]}}' > ssm.json
+            
+          aws ssm send-command --cli-input-json file://ssm.json --region $AWS_REGION
             --arg id "$INSTANCE_ID" \
             --arg cmd "$COMMANDS" \
             '{InstanceIds: [$id], DocumentName: "AWS-RunShellScript", Parameters: {commands: [$cmd]}}' > ssm.json
@@ -104,6 +112,7 @@ jobs:
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+
 
 
 
