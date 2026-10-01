@@ -27,6 +27,7 @@ resource "aws_cloudfront_origin_access_control" "default" {
 }
 
 resource "aws_cloudfront_distribution" "frontend" {
+  comment = "Order Digital CF"
   origin {
     domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
@@ -153,5 +154,6 @@ resource "aws_s3_bucket_policy" "frontend" {
     ]
   })
 }
+
 
 
