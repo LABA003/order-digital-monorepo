@@ -60,13 +60,14 @@ jobs:
           # Obtenemos el ID de la instancia basándonos en el tag Name=orderdigital-v2-backend
           INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=orderdigital-v2-backend" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
           
-          echo "Desplegando en la instancia: $INSTANCE_ID"
-          aws ssm send-command \
-            --instance-ids "$INSTANCE_ID" \
-            --document-name "AWS-RunShellScript" \
-            --comment "Deploy latest backend container" \
-            --parameters commands="$COMMANDS" \
-            --region $AWS_REGION
+                    echo "Desplegando en la instancia: $INSTANCE_ID"
+          
+          jq -n \
+            --arg id "$INSTANCE_ID" \
+            --arg cmd "$COMMANDS" \
+            '{InstanceIds: [$id], DocumentName: "AWS-RunShellScript", Parameters: {commands: [$cmd]}}' > ssm.json
+            
+          aws ssm send-command --cli-input-json file://ssm.json --region $AWS_REGION
 
 
   deploy-frontend:
@@ -103,6 +104,7 @@ jobs:
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION --paths "/*"
+
 
 
 
