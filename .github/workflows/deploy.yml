@@ -1,8 +1,6 @@
 ﻿name: Deploy Order Digital to AWS
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
 
 env:
@@ -53,7 +51,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          COMMANDS="aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY; docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest; docker stop backend || true; docker rm backend || true; docker run -d --name backend --restart always -p 3000:3000 -e DATABASE_URL=\"mysql://admin_luis:OrderDigital_2026!@orderdigital-v2-db-prod.csbwkoecu5x3.us-east-1.rds.amazonaws.com:3306/menu_db\" -e JWT_SECRET=\"SuperSecret123!\" -e CORS_ORIGINS=\"*\" $ECR_REGISTRY/$ECR_REPOSITORY:latest"
+          COMMANDS="aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY; docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest; docker stop backend || true; docker rm backend || true; docker run -d --name backend --restart always -p 3000:3000 -e DATABASE_URL=\"${{ secrets.DATABASE_URL }}\" -e JWT_SECRET=\"${{ secrets.JWT_SECRET }}\" -e CORS_ORIGINS=\"*\" $ECR_REGISTRY/$ECR_REPOSITORY:latest"
           
           INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=orderdigital-v2-backend" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
           

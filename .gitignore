@@ -1,8 +1,23 @@
 ﻿node_modules/
 dist/
 .env
-
+.env.*
+!.env.example
 
 .terraform/
 *.tfstate
 *.tfstate.*
+*.tfstate*
+state.json
+*.tfvars
+
+*.pem
+*.key
+temp_key*
+
+local_*.json
+local_*.txt
+ssm*.json
+plan*.txt
+debug_*.txt
+debug_*.json
