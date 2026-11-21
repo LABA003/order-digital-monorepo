@@ -1,0 +1,560 @@
+openapi: 3.1.0
+info:
+  title: Order Digital Backend API
+  version: 1.0.0
+  description: OpenAPI specification for the NestJS backend container (global prefix /api).
+servers:
+  - url: /api
+    description: Relative API base path (local proxy / production reverse proxy)
+  - url: http://localhost:3000/api
+    description: Local Docker / NestJS server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Role:
+      type: string
+      enum: [ADMIN, MESERO, COCINERO, CAJERO]
+    TipoCategoria:
+      type: string
+      enum: [ENTRADA, PLATO_FUERTE, BEBIDA, POSTRE, OTRO]
+    StatusPedido:
+      type: string
+      enum: [PENDIENTE, ENTREGADO, CANCELADO]
+
+    AuthDto:
+      type: object
+      required: [nombreUsuario, email, password]
+      properties:
+        nombreUsuario:
+          type: string
+          example: Juan Pérez
+        email:
+          type: string
+          format: email
+          example: example@gmail.com
+        imagen:
+          type: string
+        password:
+          type: string
+          minLength: 10
+          example: PasswordSeguro123!
+        rol:
+          $ref: '#/components/schemas/Role'
+
+    LoginDto:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: example@gmail.com
+        password:
+          type: string
+          minLength: 10
+          example: PasswordSeguro123!
+
+    CreateUsuarioDto:
+      type: object
+      required: [nombreUsuario, email, password, rol]
+      properties:
+        nombreUsuario:
+          type: string
+        email:
+          type: string
+          format: email
+        imagen:
+          type: string
+        password:
+          type: string
+        rol:
+          $ref: '#/components/schemas/Role'
+
+    UpdateUsuarioDto:
+      type: object
+      properties:
+        nombreUsuario:
+          type: string
+        email:
+          type: string
+          format: email
+        imagen:
+          type: string
+        password:
+          type: string
+        rol:
+          $ref: '#/components/schemas/Role'
+
+    CreatePlatilloDto:
+      type: object
+      required: [nombrePlatillo, precio]
+      properties:
+        nombrePlatillo:
+          type: string
+          example: Tacos al pastor
+        descripcion:
+          type: string
+        imagen:
+          type: string
+        precio:
+          type: number
+          example: 150
+        categoria:
+          $ref: '#/components/schemas/TipoCategoria'
+        status:
+          type: boolean
+          default: true
+
+    UpdatePlatilloDto:
+      type: object
+      properties:
+        nombrePlatillo:
+          type: string
+        descripcion:
+          type: string
+        imagen:
+          type: string
+        precio:
+          type: number
+        categoria:
+          $ref: '#/components/schemas/TipoCategoria'
+        status:
+          type: boolean
+
+    OrderItem:
+      type: object
+      required: [idPlatillo, cantidad]
+      properties:
+        idPlatillo:
+          type: integer
+          example: 1
+        cantidad:
+          type: integer
+          minimum: 1
+          example: 3
+
+    CreatePedidoDto:
+      type: object
+      required: [numMesa, items]
+      properties:
+        numMesa:
+          type: integer
+          example: 5
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    UpdatePedidoDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    RemovePlatillosDto:
+      type: object
+      required: [idPlatillos]
+      properties:
+        idPlatillos:
+          type: array
+          minItems: 1
+          items:
+            type: integer
+
+    UpdateStatusDto:
+      type: object
+      required: [estado]
+      properties:
+        estado:
+          $ref: '#/components/schemas/StatusPedido'
+
+    CreateTicketDto:
+      type: object
+      required: [idPedido, metodoPago]
+      properties:
+        idPedido:
+          type: integer
+        metodoPago:
+          type: string
+          example: EFECTIVO
+
+    UpdateTicketDto:
+      type: object
+      properties:
+        idPedido:
+          type: integer
+        metodoPago:
+          type: string
+
+paths:
+  /auth/register:
+    post:
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthDto'
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Validation error
+
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '201':
+          description: Authenticated with JWT accessToken and user info
+        '401':
+          description: Invalid credentials
+
+  /usuarios/create:
+    post:
+      tags: [usuarios]
+      security:
+        - bearerAuth: []
+      summary: Create a new usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUsuarioDto'
+      responses:
+        '201':
+          description: Usuario created
+        '401':
+          description: Unauthorized
+
+  /usuarios:
+    get:
+      tags: [usuarios]
+      security:
+        - bearerAuth: []
+      summary: Get all usuarios
+      responses:
+        '200':
+          description: List of usuarios
+        '401':
+          description: Unauthorized
+
+  /usuarios/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [usuarios]
+      security:
+        - bearerAuth: []
+      summary: Get usuario by id
+      responses:
+        '200':
+          description: Usuario details
+        '404':
+          description: Usuario not found
+    put:
+      tags: [usuarios]
+      security:
+        - bearerAuth: []
+      summary: Update usuario by id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUsuarioDto'
+      responses:
+        '200':
+          description: Usuario updated
+    delete:
+      tags: [usuarios]
+      security:
+        - bearerAuth: []
+      summary: Delete usuario by id
+      responses:
+        '200':
+          description: Usuario deleted
+
+  /platillos/create:
+    post:
+      tags: [platillos]
+      security:
+        - bearerAuth: []
+      summary: Create a new platillo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePlatilloDto'
+      responses:
+        '201':
+          description: Platillo created
+
+  /platillos:
+    get:
+      tags: [platillos]
+      security:
+        - bearerAuth: []
+      summary: Get all platillos
+      responses:
+        '200':
+          description: List of platillos
+
+  /platillos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [platillos]
+      security:
+        - bearerAuth: []
+      summary: Get a platillo by id
+      responses:
+        '200':
+          description: Platillo details
+        '404':
+          description: Platillo not found
+    put:
+      tags: [platillos]
+      security:
+        - bearerAuth: []
+      summary: Update a platillo by id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePlatilloDto'
+      responses:
+        '200':
+          description: Platillo updated
+    delete:
+      tags: [platillos]
+      security:
+        - bearerAuth: []
+      summary: Delete a platillo by id
+      responses:
+        '200':
+          description: Platillo deleted
+
+  /pedidos/create:
+    post:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Create a new pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePedidoDto'
+      responses:
+        '201':
+          description: Pedido created and emitted via Socket.IO
+        '401':
+          description: Unauthorized
+
+  /pedidos:
+    get:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Get all pedidos
+      responses:
+        '200':
+          description: List of pedidos
+
+  /pedidos/pendientes/{categoria}:
+    get:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Get pending items by category
+      parameters:
+        - name: categoria
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/TipoCategoria'
+      responses:
+        '200':
+          description: Pending order items filtered by category
+
+  /pedidos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Get pedido by id
+      responses:
+        '200':
+          description: Pedido details
+    delete:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Delete pedido by id
+      responses:
+        '200':
+          description: Pedido deleted
+
+  /pedidos/{idPedido}:
+    patch:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Add items to an existing pedido
+      parameters:
+        - name: idPedido
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePedidoDto'
+      responses:
+        '200':
+          description: Pedido updated
+
+  /pedidos/{idPedido}/eliminar-platillos:
+    patch:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Remove dishes from a pedido
+      parameters:
+        - name: idPedido
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemovePlatillosDto'
+      responses:
+        '200':
+          description: Dishes removed from pedido
+
+  /pedidos/{idPedido}/estado:
+    patch:
+      tags: [pedidos]
+      security:
+        - bearerAuth: []
+      summary: Update pedido status
+      parameters:
+        - name: idPedido
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusDto'
+      responses:
+        '200':
+          description: Status updated
+
+  /tickets:
+    post:
+      tags: [tickets]
+      security:
+        - bearerAuth: []
+      summary: Create a new ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketDto'
+      responses:
+        '201':
+          description: Ticket created and emitted via Socket.IO
+    get:
+      tags: [tickets]
+      security:
+        - bearerAuth: []
+      summary: Get all tickets
+      responses:
+        '200':
+          description: List of tickets
+
+  /tickets/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [tickets]
+      security:
+        - bearerAuth: []
+      summary: Get ticket by id
+      responses:
+        '200':
+          description: Ticket details
+    put:
+      tags: [tickets]
+      security:
+        - bearerAuth: []
+      summary: Update ticket by id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicketDto'
+      responses:
+        '200':
+          description: Ticket updated
+    delete:
+      tags: [tickets]
+      security:
+        - bearerAuth: []
+      summary: Delete ticket by id
+      responses:
+        '200':
+          description: Ticket deleted

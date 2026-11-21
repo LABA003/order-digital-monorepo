@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Block sensitive files from being committed
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+if [ -n "$STAGED_FILES" ]; then
+  FORBIDDEN=$(echo "$STAGED_FILES" | grep -E '(^|/)\.env($|\..*)|\.pem$|\.key$|\.tfstate($|\.)|\.tfvars$|^gedesoft/compose\.yaml$' | grep -v -E '(^|/)\.env\.example$' || true)
+  if [ -n "$FORBIDDEN" ]; then
+    echo "ERROR [pre-commit]: Forbidden sensitive file(s) staged for commit:"
+    echo "$FORBIDDEN"
+    exit 1
+  fi
+fi
+
+# Block hardcoded credentials or leaked secrets in staged content
+MATCHES=$(git grep --cached -n -E 'mysql://[^$"{]+:[^$"{]+@|AKIA[0-9A-Z]{16}|BEGIN .* PRIVATE KEY|OrderDigital_2026|SuperSecret123|rootpass|supersecretjwt|1234567890' -- . ':(exclude)gedesoft/test/*' ':(exclude).github/workflows/ci-security.yml' ':(exclude).githooks/pre-commit' | grep -v 'CHANGE_ME_' || true)
+if [ -n "$MATCHES" ]; then
+  echo "ERROR [pre-commit]: Potential hardcoded secret(s) detected in staged files:"
+  echo "$MATCHES"
+  exit 1
+fi

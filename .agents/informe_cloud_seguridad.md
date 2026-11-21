@@ -6,7 +6,7 @@ He revisado la arquitectura actual de \order Digital\ (basada en NestJS, Angular
 
 ### Hallazgos Críticos (Nivel Alto)
 - **Credenciales en texto plano:** El archivo \compose.yaml\ expone contraseñas estáticas de la base de datos (\MYSQL_ROOT_PASSWORD\, \MYSQL_PASSWORD\).
-- **Secretos JWT Inseguros:** En el entorno local se está pasando un \JWT_SECRET\ débil (\supersecretjwt\).
+- **Secretos JWT Inseguros:** En el entorno local se está pasando un \JWT_SECRET\ débil ([secreto por defecto débil]).
 - **Falta de cifrado en tránsito:** Actualmente la aplicación funciona por HTTP (puertos 3000 y 4000). Se requiere implementar TLS/HTTPS.
 - **Configuración CORS permisiva:** En \main.ts\ y \pedidos.gateway.ts\, el CORS está configurado con \origin: true\, lo que permite que **cualquier dominio** interactúe con la API.
 

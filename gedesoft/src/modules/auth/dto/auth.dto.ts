@@ -22,7 +22,7 @@ export class AuthDto {
   @IsString()
   imagen?: string;
 
-  @ApiProperty({ description: 'Contraseña del usuario', example: '1234567890' })
+  @ApiProperty({ description: 'Contraseña del usuario', example: 'PasswordSeguro123!' })
   @IsString()
   @MinLength(10)
   password: string;
