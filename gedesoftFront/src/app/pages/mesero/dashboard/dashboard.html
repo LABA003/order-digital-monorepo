@@ -1,0 +1,134 @@
+<div class="toast-container" *ngIf="notificacionReciente">
+    <div class="glass-toast slide-in">
+        <div class="toast-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        </div>
+        <div class="toast-content">
+            <ng-container *ngIf="notificacionReciente.esParcial">
+                <strong>¡Item Listo!</strong>
+                <p>{{ notificacionReciente.nombrePlatillo }} (Mesa {{ notificacionReciente.mesa }})</p>
+            </ng-container>
+            <ng-container *ngIf="!notificacionReciente.esParcial">
+                <strong>¡Pedido Completo!</strong>
+                <p>Todo listo para la Mesa {{ notificacionReciente.mesa }}</p>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+<div class="waiter-dashboard">
+
+    <div class="mesas-section">
+        <div class="mesas-header">
+            <h1>Salón Principal</h1>
+            <p>Selecciona una mesa para gestionar</p>
+        </div>
+
+        <div class="mesas-grid">
+            <div class="mesa-card glass-card" *ngFor="let mesa of mesas"
+                [ngClass]="{'ocupada': mesa.pedidoActivo, 'libre': !mesa.pedidoActivo, 'tiene-listos': tienePedidosListos(mesa.numero)}" (click)="gestionarMesa(mesa)">
+
+                <div class="mesa-top">
+                    <span class="mesa-numero">{{ mesa.numero }}</span>
+                    
+                    <!-- Indicador de platillos listos -->
+                    <div *ngIf="tienePedidosListos(mesa.numero)" class="ready-bell">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </div>
+
+                    <svg *ngIf="mesa.pedidoActivo && !tienePedidosListos(mesa.numero)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="user-icon">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+
+                <div class="mesa-body">
+                    <div *ngIf="mesa.pedidoActivo" class="info-ocupada">
+                        <span class="label">Cuenta</span>
+                        <span class="total">${{ mesa.total | number:'1.0-0' }}</span>
+                    </div>
+
+                    <div *ngIf="!mesa.pedidoActivo" class="info-libre">
+                        <span class="libre-badge">Libre</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-overlay" *ngIf="mesaSeleccionada">
+    <div class="modal-card glass-card">
+
+        <div class="modal-header">
+            <div class="header-text">
+                <h2>Mesa {{ mesaSeleccionada.numero }}</h2>
+                <span class="status-tag" [class.active]="mesaSeleccionada.pedidoActivo">
+                    {{ mesaSeleccionada.pedidoActivo ? 'Ocupada' : 'Disponible' }}
+                </span>
+            </div>
+            <button class="close-btn" (click)="mesaSeleccionada = null">&times;</button>
+        </div>
+
+        <div class="modal-body-centered">
+            <!-- SECCIÓN NUEVA: Pedidos Listos -->
+            <div *ngIf="tienePedidosListos(mesaSeleccionada.numero)" class="modal-ready-section">
+                <h3 class="modal-ready-title">🌟 Pendientes por Entregar</h3>
+                <div class="modal-ready-list">
+                    <div class="ready-item-card" *ngFor="let item of getPedidosListosPorMesa(mesaSeleccionada.numero)">
+                        <div class="ready-item-info">
+                            <strong>{{ item.mensaje }}</strong>
+                        </div>
+                        <button class="btn-recoger-small" (click)="marcarEntregado(item)">
+                            Entregado ✓
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="total-display" *ngIf="mesaSeleccionada.pedidoActivo">
+                <small>Total Actual</small>
+                <span class="amount">{{ mesaSeleccionada.total | currency }}</span>
+                <span class="order-ref">Pedido #{{ mesaSeleccionada.pedidoActivo?.idPedido }}</span>
+            </div>
+
+            <div class="empty-display" *ngIf="!mesaSeleccionada.pedidoActivo">
+                <p>La mesa está lista para nuevos clientes.</p>
+            </div>
+        </div>
+
+        <div class="modal-actions-vertical">
+
+            <button class="btn-modal btn-black" (click)="irATomarPedido(mesaSeleccionada.numero)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>{{ mesaSeleccionada.pedidoActivo ? 'Editar / Agregar Items' : 'Abrir Mesa y Pedir' }}</span>
+            </button>
+
+            <button *ngIf="mesaSeleccionada.pedidoActivo" class="btn-modal btn-outline"
+                (click)="cerrarCuenta(mesaSeleccionada)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>Cobrar y Cerrar Cuenta</span>
+            </button>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,161 @@
+<div class="toast-container" *ngIf="notificacion">
+  <div class="glass-toast slide-in">
+    <div class="icon">✅</div>
+    <span>{{ notificacion }}</span>
+  </div>
+</div>
+
+<div class="pedido-wrapper">
+
+  <div class="menu-section custom-scroll">
+
+    <div class="nav-header">
+      <button class="btn-icon-back" (click)="volverAlDashboard()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+      <div class="mesa-badge-lg" *ngIf="numMesa">
+        Mesa {{ numMesa }}
+      </div>
+    </div>
+
+    <div class="menu-content">
+      <h1 class="page-title">Menú</h1>
+
+      <div class="filtros-categoria">
+        <button *ngFor="let cat of categorias" class="filter-chip" [class.active]="cat === categoriaSeleccionada"
+          (click)="filtrarCategoria(cat)">
+
+          <ng-container [ngSwitch]="cat.toLowerCase()">
+            <svg *ngSwitchCase="'entradas'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+              <line x1="6" y1="1" x2="6" y2="4"></line>
+              <line x1="10" y1="1" x2="10" y2="4"></line>
+              <line x1="14" y1="1" x2="14" y2="4"></line>
+            </svg>
+            <svg *ngSwitchCase="'platos fuertes'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M18 8c0-3.31-2.69-6-6-6S6 4.69 6 8"></path>
+              <path d="M22 8H2"></path>
+              <path d="M22 17H2"></path>
+              <path d="M4 8v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path>
+            </svg>
+            <svg *ngSwitchCase="'postres'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="7" r="4"></circle>
+              <path d="M5.5 11h13a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"></path>
+            </svg>
+            <svg *ngSwitchCase="'bebidas'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+              <line x1="6" y1="1" x2="6" y2="4"></line>
+              <line x1="10" y1="1" x2="10" y2="4"></line>
+              <line x1="14" y1="1" x2="14" y2="4"></line>
+            </svg>
+            <svg *ngSwitchDefault xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+          </ng-container>
+
+          <span>{{ cat | titlecase }}</span>
+        </button>
+      </div>
+
+      <div class="platillo-grid">
+        <div class="food-card" *ngFor="let p of platillosFiltrados" (click)="agregarAPedido(p)">
+
+          <div class="img-container">
+            <img [src]="p.imagen || 'assets/placeholder-food.png'" alt="{{ p.nombrePlatillo }}">
+          </div>
+
+          <div class="card-details">
+            <h3>{{ p.nombrePlatillo }}</h3>
+
+            <p class="category-label">{{ p.categoria | titlecase }}</p>
+
+            <p class="description-text">
+              {{ p.descripcion ? p.descripcion : 'Deliciosa preparación de la casa.' }}
+            </p>
+
+            <div class="price-row">
+              <span class="price">{{ p.precio | currency:'MX':'symbol':'1.0-0' }}</span>
+              <button class="add-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticket-section glass-card">
+    <div class="ticket-header">
+      <h2>Pedido Actual</h2>
+      <span class="badge-count">{{ pedidoActual.length }} items</span>
+    </div>
+
+    <div class="ticket-items custom-scroll" *ngIf="pedidoActual.length > 0; else ticketVacio">
+      <div class="ticket-row" *ngFor="let item of pedidoActual">
+        <div class="row-info">
+          <span class="name">{{ item.nombre }}</span>
+          <span class="price">{{ item.precio | currency:'USD':'symbol':'1.0-0' }}</span>
+        </div>
+
+        <div class="qty-control">
+          <button class="btn-qty minus" (click)="quitarDePedido(item)">-</button>
+          <span class="qty">{{ item.cantidad }}</span>
+          <button class="btn-qty plus" (click)="incrementarCantidad(item)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #ticketVacio>
+      <div class="empty-ticket">
+        <div class="icon-placeholder">🍽️</div>
+        <p>Selecciona productos del menú</p>
+      </div>
+    </ng-template>
+
+    <div class="ticket-footer">
+
+      <div class="mesa-input-group" *ngIf="!numMesa || numMesa <= 0">
+        <label>Asignar Mesa:</label>
+        <input type="number" [(ngModel)]="numMesa" (ngModelChange)="buscarPedidoAbierto()" placeholder="#"
+          class="form-control-sm">
+      </div>
+
+      <div class="total-row">
+        <span>Total</span>
+        <span class="total-amount">{{ totalPedido | currency }}</span>
+      </div>
+
+      <button class="btn-enviar" (click)="enviarPedido()"
+        [disabled]="enviandoPedido || !numMesa || numMesa <= 0 || pedidoActual.length === 0">
+        {{ enviandoPedido ? 'Enviando...' : 'Confirmar Pedido' }}
+        <svg *ngIf="!enviandoPedido" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+</div>

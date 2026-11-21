@@ -1,0 +1,38 @@
+<div class="login-container">
+
+  <div class="glass-card login-card">
+
+    <div class="login-header">
+      <div class="logo-container">
+        <img src="https://placehold.co/80x80/1A1A1A/FFFFFF?text=R" alt="Logo" class="logo">
+      </div>
+      <h1>Bienvenido</h1>
+      <p>Inicia sesión para continuar</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input type="email" id="email" class="form-control" [(ngModel)]="credentials.email" name="email"
+          placeholder="nombre@restaurante.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" id="password" class="form-control" [(ngModel)]="credentials.password" name="password"
+          placeholder="••••••••" required>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">
+        Entrar
+      </button>
+
+    </form>
+
+  </div>
+</div>

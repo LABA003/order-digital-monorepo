@@ -1,0 +1,34 @@
+<div class="mesero-panel">
+  
+  <header class="mesero-header">
+    <h2>Panel de Mesero</h2>
+    <p>Bienvenido. Seleccione una acción.</p>
+  </header>
+
+  <nav class="mesero-nav">
+    <!-- 
+      Este es el botón.
+      [routerLink] navega a la ruta hija 'toma-pedido'.
+      La URL completa será /mesero/toma-pedido.
+    -->
+    <a 
+      [routerLink]="['toma-pedido']" 
+      class="btn-levantar-pedido"
+    >
+      <i class="icon-pedido"></i> <!--  Icono -->
+      Levantar Nuevo Pedido
+    </a>
+    
+    <!--  añadir más botones, como "Ver Mesas Activas" -->
+    <!-- <a [routerLink]="['ver-mesas']" class="btn-secundario">Ver Mesas</a> -->
+  </nav>
+
+  <!-- 
+     mostrará el componente 'TomaPedido' 
+    (y otros hijos) después de hacer clic en el botón.
+  -->
+  <div class="mesero-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

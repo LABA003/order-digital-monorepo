@@ -1,0 +1,426 @@
+/* Wrapper principal */
+.cocina-wrapper {
+  height: calc(100vh - 4rem);
+  /* Ajuste para el sidebar */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Evita scroll general, solo en columnas */
+}
+
+/* Header transparente */
+.glass-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  .header-content {
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      color: var(--color-texto-secundario);
+      margin: 0;
+    }
+  }
+}
+
+/* Filtros tipo "Chip" */
+.filtros-categoria {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 6px;
+  /* Un poco más de padding al contenedor */
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  .filter-chip {
+    /* Flexbox para alinear icono y texto */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Espacio entre icono y texto */
+
+    padding: 10px 18px;
+    /* Botones un poco más grandes y cómodos */
+    border: none;
+    border-radius: 30px;
+    /* Más redondeados */
+    background: transparent;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-texto-secundario);
+    transition: all 0.3s ease;
+
+    /* Estilo del Icono SVG */
+    svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2px;
+      transition: stroke 0.3s ease;
+      stroke: currentColor;
+    }
+
+    &:hover {
+      color: #1a1a1a;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Estado Activo (Negro con texto e icono blanco) */
+    &.active {
+      background: #1a1a1a;
+      color: #fff;
+      /* El icono SVG también se volverá blanco por 'currentColor' */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: scale(1.02);
+      /* Pequeño efecto pop al activar */
+    }
+  }
+}
+
+/* --- KANBAN BOARD --- */
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  flex: 1;
+  min-height: 0;
+  /* Clave para que el scroll funcione dentro del grid */
+}
+
+.kanban-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  .col-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding-left: 5px;
+
+    h2 {
+      font-size: 1.1rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .count {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    &.status-new .dot {
+      background: #3498db;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+    }
+
+    &.status-prep .dot {
+      background: #e67e22;
+      box-shadow: 0 0 8px rgba(230, 126, 34, 0.5);
+    }
+
+    &.status-ready .dot {
+      background: #2ecc71;
+      box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+    }
+  }
+
+  .col-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 5px;
+    /* Espacio para la sombra de las tarjetas */
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+}
+
+/* Tarjeta de Pedido (Glass Card) */
+.pedido-card {
+  /* Hereda estilos base de glass-card global si existen, si no: */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .order-id {
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .mesa-badge {
+      background: #f0f0f0;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+
+      &.dark {
+        background: #1a1a1a;
+        color: #fff;
+      }
+
+      &.success {
+        background: #d4edda;
+        color: #155724;
+      }
+    }
+  }
+
+  .items-list {
+    list-style: none;
+    margin-bottom: 1.5rem;
+
+    .item-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+
+      .qty {
+        font-weight: 700;
+        color: #1a1a1a;
+      }
+
+      .name {
+        color: var(--color-texto-principal);
+      }
+    }
+  }
+
+  .card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Botones */
+.btn-block {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-black {
+  background: #1a1a1a;
+  color: #fff;
+
+  &:hover {
+    background: #333;
+    transform: scale(1.02);
+  }
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.text-danger {
+  color: #d32f2f;
+}
+
+/* CHECKLIST ESTILIZADO */
+.checklist-container {
+  margin-bottom: 1.5rem;
+
+  .check-item {
+    margin-bottom: 10px;
+
+    label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.2s;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.03);
+      }
+
+      input {
+        display: none;
+      }
+
+      /* Ocultar checkbox nativo */
+
+      /* Checkbox Personalizado */
+      .custom-check {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        margin-right: 10px;
+        position: relative;
+        transition: 0.2s;
+      }
+
+      /* Texto */
+      .item-text {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+
+        .qty-badge {
+          background: #eee;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          font-size: 0.8rem;
+          font-weight: 700;
+        }
+      }
+
+      /* ESTADO: CHECKEADO */
+      &.checked {
+        .custom-check {
+          background: #28a745;
+          border-color: #28a745;
+
+          &:after {
+            content: '✔';
+            color: white;
+            position: absolute;
+            font-size: 12px;
+            top: 0;
+            left: 4px;
+          }
+        }
+
+        .item-text {
+          text-decoration: line-through;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}
+
+/* Botón inteligente en preparación */
+.transition-btn {
+  &.btn-outline {
+    background: transparent;
+    border: 2px solid #1a1a1a;
+    color: #1a1a1a;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  &.btn-success {
+    background: #28a745;
+    color: white;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* Tarjeta Listo */
+.ready-card {
+  border-left: 5px solid #28a745;
+
+  .ready-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    color: #28a745;
+    font-weight: 600;
+  }
+}
+
+/* Scrollbar personalizado delgado */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+  border: 2px dashed #eee;
+  border-radius: 12px;
+}
+
+/* Animación de entrada */
+.fade-in {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

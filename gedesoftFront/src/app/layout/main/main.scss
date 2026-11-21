@@ -1,0 +1,164 @@
+/* Usamos la clase .layout-wrapper definida en styles.scss global, 
+   pero aquí especificamos el comportamiento del grid/flex */
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 90px;
+  /* Sidebar delgado estilo App */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  z-index: 100;
+
+  /* ESTILO DE VIDRIO (Glassmorphism) */
+  background: rgba(255, 255, 255, 0.4);
+  /* Más transparente */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+
+  /* Transición suave para expandir si quisieras hacerlo hover en el futuro */
+  transition: all 0.3s ease;
+}
+
+.sidebar-header {
+  margin-bottom: 3rem;
+
+  .logo-icon {
+    width: 45px;
+    height: 45px;
+    background: #1a1a1a;
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  /* Espacio entre iconos */
+  width: 100%;
+  align-items: center;
+  padding: 0;
+
+  li {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Estilos del enlace (Botón) */
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--color-texto-secundario);
+
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    /* Cuadrado redondeado */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    position: relative;
+
+    /* Icono SVG */
+    svg {
+      width: 24px;
+      height: 24px;
+      transition: 0.3s;
+      stroke-width: 2px;
+    }
+
+    /* Texto (oculto por defecto para look minimalista, o pequeño abajo) */
+    .link-text {
+      font-size: 0.6rem;
+      margin-top: 4px;
+      font-weight: 500;
+      opacity: 0;
+      /* Oculto inicialmente */
+      height: 0;
+      overflow: hidden;
+      transition: 0.3s;
+    }
+
+    /* HOVER STATE */
+    &:hover {
+      color: var(--color-texto-principal);
+      background: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+
+      .link-text {
+        opacity: 1;
+        height: auto;
+      }
+    }
+
+    /* ACTIVE STATE (Cuando estás en la página) */
+    &.active {
+      background: #1a1a1a;
+      /* Botón negro como en la imagen */
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      transform: scale(1.1);
+
+      svg {
+        stroke: #ffffff;
+      }
+
+      .link-text {
+        display: none;
+        /* No mostramos texto en activo para mantenerlo limpio */
+      }
+    }
+  }
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  /* Empuja el footer al fondo */
+  margin-bottom: 1rem;
+}
+
+.btn-logout {
+  background: transparent;
+  border: none;
+  color: #B00020;
+  /* Color rojo sutil para salir */
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(176, 0, 32, 0.1);
+    transform: translateX(3px);
+  }
+}
+
+/* Ajuste del contenido principal para que no quede detrás del sidebar fijo */
+.main-content {
+  margin-left: 90px;
+  /* Mismo ancho que el sidebar */
+  padding: 2rem 3rem;
+  width: calc(100% - 90px);
+  min-height: 100vh;
+}

@@ -1,0 +1,19 @@
+<div class="admin-panel">
+    <header class="admin-header">
+        <h2>Bienenido</h2>
+    </header>
+    <nav class="admin-nav">
+          <a 
+      [routerLink]="['dashboard']" 
+      class="btn-admin-pedido"
+    >
+      <i class="icon-pedido"></i> <!--  Icono -->
+      Panel
+    </a>
+
+    </nav>
+    <div class="admin-content">
+        <router-outlet></router-outlet>
+    </div>
+
+</div>

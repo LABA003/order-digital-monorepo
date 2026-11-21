@@ -1,0 +1,63 @@
+name: CI Security & Build Verification
+
+on:
+  push:
+    branches: [ "PRODUCCION", "main", "Development" ]
+  pull_request:
+    branches: [ "PRODUCCION", "main", "Development" ]
+
+jobs:
+  security-audit:
+    name: Security & Secret Guardrails
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for forbidden sensitive files
+        run: |
+          FORBIDDEN=$(git ls-files | grep -E '(^|/)\.env($|\..*)|\.pem$|\.key$|\.tfstate($|\.)|\.tfvars$|^gedesoft/compose\.yaml$' | grep -v -E '(^|/)\.env\.example$' || true)
+          if [ -n "$FORBIDDEN" ]; then
+            echo "::error::Forbidden sensitive files are tracked in Git:"
+            echo "$FORBIDDEN"
+            exit 1
+          fi
+
+      - name: Scan tracked files for hardcoded secrets
+        run: |
+          MATCHES=$(git grep -n -E 'mysql://[^$"{]+:[^$"{]+@|AKIA[0-9A-Z]{16}|BEGIN .* PRIVATE KEY|OrderDigital_2026|SuperSecret123|rootpass|supersecretjwt|1234567890' -- . ':(exclude)gedesoft/test/*' ':(exclude).github/workflows/ci-security.yml' ':(exclude).githooks/pre-commit' | grep -v 'CHANGE_ME_' || true)
+          if [ -n "$MATCHES" ]; then
+            echo "::error::Potential hardcoded secrets detected:"
+            echo "$MATCHES"
+            exit 1
+          fi
+
+  build-verify:
+    name: Build Backend & Frontend
+    needs: security-audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            gedesoft/package-lock.json
+            gedesoftFront/package-lock.json
+
+      - name: Verify Backend Build (NestJS + Prisma)
+        working-directory: ./gedesoft
+        run: |
+          npm ci
+          npx prisma generate
+          npm run build
+
+      - name: Verify Frontend Build (Angular)
+        working-directory: ./gedesoftFront
+        run: |
+          npm ci
+          npm run build -- --configuration production

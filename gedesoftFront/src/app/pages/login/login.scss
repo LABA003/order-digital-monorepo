@@ -1,0 +1,104 @@
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  /* IMPORTANTE: Quitamos el background-color aquí para que se vea el fondo 
+     del body (las manchas de color durazno/azul) */
+  background: transparent;
+  padding: 20px;
+  /* Para que no pegue a los bordes en móviles */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  /* Un poco más estrecho para verse más elegante */
+
+  /* El borde superior verde antiguo se quita para dar paso al estilo limpio */
+  border-top: none;
+
+  /* Animación sutil de entrada */
+  animation: floatUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .logo-container {
+    margin-bottom: 1.5rem;
+    display: inline-block;
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      /* Cuadrado redondeado moderno */
+      object-fit: cover;
+      /* Sombra fuerte para que parezca flotar */
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      transform: rotate(-5deg);
+      /* Un pequeño giro "cool" */
+    }
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--color-texto-principal);
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: var(--color-texto-secundario);
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+/* Ajustes específicos para inputs dentro del login si los necesitas */
+.form-control {
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Ligeramente más opaco */
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem;
+  /* Botón un poco más alto */
+  font-size: 1.1rem;
+}
+
+.error-message {
+  color: #D32F2F;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  padding: 0.8rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+}
+
+/* Animación de entrada */
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
